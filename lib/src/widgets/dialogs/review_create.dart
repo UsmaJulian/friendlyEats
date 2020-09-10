@@ -84,15 +84,18 @@ class _ReviewCreateDialogState extends State<ReviewCreateDialog> {
         ),
         RaisedButton(
           child: Text('SAVE'),
-          onPressed: () => Navigator.pop(
-            context,
-            Review.fromUserInput(
-              rating: rating,
-              text: review,
-              userId: widget.userId,
-              userName: widget.userName,
-            ),
-          ),
+          onPressed: () {
+            Navigator.pop(
+              context,
+              Review.fromUserInput(
+                rating: rating,
+                text: review,
+                userId: widget.userId,
+                userName: widget.userName,
+              ),
+            );
+            setState(() {});
+          },
         ),
       ],
     );

@@ -21,13 +21,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sliver_fab/sliver_fab.dart';
 
-import 'widgets/empty_list.dart';
 import 'model/data.dart' as data;
 import 'model/restaurant.dart';
 import 'model/review.dart';
 import 'widgets/app_bar.dart';
-import 'widgets/review.dart';
 import 'widgets/dialogs/review_create.dart';
+import 'widgets/empty_list.dart';
+import 'widgets/review.dart';
 
 class RestaurantPage extends StatefulWidget {
   static const route = '/restaurant';
@@ -102,6 +102,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
     if (newReview != null) {
       // Save the review
+
       return data.addReview(
         restaurantId: _restaurant.id,
         review: newReview,

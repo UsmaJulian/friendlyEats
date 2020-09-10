@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import '../model/restaurant.dart';
 import 'stars.dart';
 
-class RestaurantAppBar extends StatelessWidget {
+class RestaurantAppBar extends StatefulWidget {
   static final double appBarHeight = 160;
 
   RestaurantAppBar({
@@ -30,21 +30,26 @@ class RestaurantAppBar extends StatelessWidget {
   final CloseRestaurantPressedCallback _onPressed;
 
   @override
+  _RestaurantAppBarState createState() => _RestaurantAppBarState();
+}
+
+class _RestaurantAppBarState extends State<RestaurantAppBar> {
+  @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       leading: IconButton(
-        onPressed: _onPressed,
+        onPressed: widget._onPressed,
         icon: Icon(Icons.close),
         iconSize: 32,
       ),
-      expandedHeight: appBarHeight,
+      expandedHeight: RestaurantAppBar.appBarHeight,
       forceElevated: true,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: false,
         title: Wrap(
           children: <Widget>[
             Text(
-              restaurant.name,
+              widget.restaurant.name,
               overflow: TextOverflow.ellipsis,
             ),
             Row(
@@ -54,15 +59,26 @@ class RestaurantAppBar extends StatelessWidget {
                   width: 80,
                   alignment: Alignment.bottomLeft,
                   child: StarRating(
-                    rating: restaurant.avgRating,
+                    rating: widget.restaurant.avgRating,
                     color: Colors.white,
                     size: 16,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 6),
+                  child: Container(
+                    child: Text(
+                      '${widget.restaurant.avgRating.toStringAsFixed(1)}',
+                      style: TextStyle(
+                          fontSize:
+                              Theme.of(context).textTheme.caption.fontSize),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 6),
                   child: Text(
-                    '\$' * restaurant.price,
+                    '\$' * widget.restaurant.price,
                     style: TextStyle(
                         fontSize: Theme.of(context).textTheme.caption.fontSize),
                   ),
@@ -72,7 +88,7 @@ class RestaurantAppBar extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 2),
               child: Text(
-                '${restaurant.category} ● ${restaurant.city}',
+                '${widget.restaurant.category} ● ${widget.restaurant.city}',
                 style: TextStyle(
                     fontSize: Theme.of(context).textTheme.caption.fontSize),
               ),
@@ -83,7 +99,7 @@ class RestaurantAppBar extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             Image.network(
-              restaurant.photo,
+              widget.restaurant.photo,
               fit: BoxFit.cover,
             ),
             Container(

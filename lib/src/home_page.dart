@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
   StreamSubscription<QuerySnapshot> _currentSubscription;
   bool _isLoading = true;
   List<Restaurant> _restaurants = <Restaurant>[];
+
   Filter _filter;
 
   void _updateRestaurants(QuerySnapshot snapshot) {
@@ -69,6 +70,7 @@ class _HomePageState extends State<HomePage> {
     final numReviews = Random().nextInt(10) + 20;
 
     final restaurants = List.generate(numReviews, (_) => Restaurant.random());
+
     data.addRestaurantsBatch(restaurants);
   }
 
