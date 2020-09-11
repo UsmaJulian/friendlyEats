@@ -135,7 +135,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
                   tooltip: 'Add a review',
                   backgroundColor: Colors.amber,
                   child: Icon(Icons.add),
-                  onPressed: () => _onCreateReviewPressed(context),
+                  onPressed: () {
+                    setState(() {});
+                    _onCreateReviewPressed(context);
+                  },
                 ),
                 floatingPosition: FloatingPosition(right: 16),
                 expandedHeight: RestaurantAppBar.appBarHeight,

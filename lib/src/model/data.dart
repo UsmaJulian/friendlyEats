@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import './filter.dart';
 import './restaurant.dart';
@@ -38,7 +39,7 @@ Stream<QuerySnapshot> loadAllRestaurants() {
       .collection('restaurants')
       .orderBy('avgRating', descending: true)
       .limit(50)
-      .snapshots();
+      .snapshots(includeMetadataChanges: true);
 }
 
 List<Restaurant> getRestaurantsFromQuery(QuerySnapshot snapshot) {
@@ -99,11 +100,29 @@ Stream<QuerySnapshot> loadFilteredRestaurants(Filter filter) {
   return collection
       .orderBy(filter.sort ?? 'avgRating', descending: true)
       .limit(50)
-      .snapshots();
+      .snapshots(includeMetadataChanges: true);
 }
 
-void addRestaurantsBatch(List<Restaurant> restaurants) {
-  restaurants.forEach((Restaurant restaurant) {
-    addRestaurant(restaurant);
+void addRestaurantsBatch(
+    List<Restaurant> restaurants, UserCredential credential) async {
+  Query query = FirebaseFirestore.instance.collection('restaurants');
+  WriteBatch batch = FirebaseFirestore.instance.batch();
+  restaurants.forEach((Restaurant restaurant) async {
+    await addRestaurant(restaurant);
   });
+  await query.get().then((querySnapshot) async {
+    querySnapshot.docs.forEach((document) {
+      final newReview = document.reference.collection('ratings').doc();
+
+      batch.set(newReview, {
+        'rating': Review.random().rating,
+        'text': Review.random().text,
+        'userName': credential.user.displayName ?? 'Anonimous',
+        'timestamp': Review.random().timestamp ?? FieldValue.serverTimestamp(),
+        'userId': credential.user.uid
+      });
+      SetOptions(merge: true);
+    });
+  });
+  await batch.commit();
 }
