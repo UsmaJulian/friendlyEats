@@ -1,4 +1,4 @@
-{
+ {
   "hosting": {
     "predeploy": "flutter clean & flutter build web",
     "public": "build/web",

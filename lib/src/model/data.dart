@@ -14,6 +14,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import './filter.dart';
 import './restaurant.dart';
@@ -106,7 +107,7 @@ Stream<QuerySnapshot> loadFilteredRestaurants(Filter filter) {
 void addRestaurantsBatch(
     List<Restaurant> restaurants, UserCredential credential) async {
   Query query = FirebaseFirestore.instance.collection('restaurants');
-  WriteBatch batch = FirebaseFirestore.instance.batch();
+  var batch = FirebaseFirestore.instance.batch();
   restaurants.forEach((Restaurant restaurant) async {
     await addRestaurant(restaurant);
   });
@@ -114,14 +115,18 @@ void addRestaurantsBatch(
     querySnapshot.docs.forEach((document) {
       final newReview = document.reference.collection('ratings').doc();
 
-      batch.set(newReview, {
-        'rating': Review.random().rating,
-        'text': Review.random().text,
-        'userName': credential.user.displayName ?? 'Anonimous',
-        'timestamp': Review.random().timestamp ?? FieldValue.serverTimestamp(),
-        'userId': credential.user.uid
-      });
-      SetOptions(merge: true);
+      batch.set(
+        newReview,
+        {
+          'rating': Review.random().rating,
+          'text': Review.random().text,
+          'userName': 'Anonymous (${kIsWeb ? "Web" : "Mobile"})',
+          'timestamp':
+              Review.random().timestamp ?? FieldValue.serverTimestamp(),
+          'userId': credential.user.uid
+        },
+      );
+      SetOptions(merge: false);
     });
   });
   await batch.commit();
